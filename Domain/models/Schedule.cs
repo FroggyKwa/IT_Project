@@ -1,4 +1,4 @@
-﻿namespace Domain
+﻿namespace Domain.models
 {
     public class Schedule
     {
