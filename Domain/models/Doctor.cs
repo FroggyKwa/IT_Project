@@ -15,7 +15,7 @@ namespace Domain.Models
             Specialization = specialization;
         }
 
-        public Doctor() : this(0, "", new Specialization()) { }
+        public Doctor() : this(-1, "", new Specialization()) { }
 
         public Result IsValid()
         {

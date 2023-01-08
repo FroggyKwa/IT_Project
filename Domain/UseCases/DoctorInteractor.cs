@@ -17,14 +17,14 @@ namespace Domain.UseCases
         public Result<Doctor> CreateDoctor(Doctor doctor)
         {
             if (doctor.IsValid().isFailure)
-                return Result.Fail<Doctor>("Invalid doctor: " + doctor.IsValid().Error);
+                return Result.Fail<Doctor>("Incorrect doctor: " + doctor.IsValid().Error);
             return _db.createDoctor(doctor) ? Result.Ok(doctor) : Result.Fail<Doctor>("Cannot create doctor");
         }
 
         public Result<Doctor> GetDoctor(int id)
         {
             if (id < 0)
-                return Result.Fail<Doctor>("Invalid id");
+                return Result.Fail<Doctor>("Incorrect doctor id");
 
             var doctor = _db.getDoctor(id);
 
@@ -34,7 +34,7 @@ namespace Domain.UseCases
         {
             var result = specialization.IsValid();
             if (result.isFailure)
-                return Result.Fail<Doctor>("Incorrect specialization: " + result.Error);
+                return Result.Fail<Doctor>("Incorrect doctor specialization: " + result.Error);
 
             var doctor = _db.getDoctor(specialization);
 
@@ -43,12 +43,13 @@ namespace Domain.UseCases
 
         public Result<Doctor> deleteDoctor(int id)
         {
+            var res = _apdb.GetAppointments(id);
             if (_apdb.GetAppointments(id).Any())
                 return Result.Fail<Doctor>("Cannot delete doctor. Doctor has appointments");
             var result = GetDoctor(id);
             if (result.isFailure)
                 return Result.Fail<Doctor>(result.Error);
-            return _db.deleteDoctor(GetDoctor(id).Value) ? result : Result.Fail<Doctor>("Cannot delete the doctor");
+            return _db.deleteDoctor(id) ? result : Result.Fail<Doctor>("Cannot delete the doctor");
         }
     }
 }

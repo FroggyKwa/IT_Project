@@ -8,6 +8,15 @@ namespace Domain.Models
         public DateTime StartTime;
         public DateTime EndTime;
 
+        public Schedule(int doctorId, DateTime startTime, DateTime endTime)
+        {
+            DoctorId = doctorId;
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+
+        public Schedule() : this(0, DateTime.MinValue, DateTime.MaxValue) { }
+
         public Result IsValid()
         {
             if (DoctorId < 0)

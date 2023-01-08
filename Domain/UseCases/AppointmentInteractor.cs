@@ -35,7 +35,7 @@ namespace domain.UseCases
                     return Result.Fail<Appointment>("Appointment time already taken");
             }
 
-            return _db.Save(appointment) ? Result.Ok(appointment) : Result.Fail<Appointment>("Unable to save appointment");
+            return _db.CreateAppointment(appointment) ? Result.Ok(appointment) : Result.Fail<Appointment>("Unable to save appointment");
         }
 
         public Result<IEnumerable<Appointment>> GetAppointments(Specialization specialization)

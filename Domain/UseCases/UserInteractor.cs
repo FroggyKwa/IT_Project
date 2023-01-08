@@ -4,11 +4,11 @@ using domain.Logic.Interfaces;
 
 namespace Domain.UseCases
 {
-    public class UserService
+    public class UserInteractor
     {
         private readonly IUserRepository _db;
 
-        public UserService(IUserRepository db)
+        public UserInteractor(IUserRepository db)
         {
             _db = db;
         }
