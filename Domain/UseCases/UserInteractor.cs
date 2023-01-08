@@ -1,14 +1,14 @@
-﻿using Domain.models;
-using Domain.logic;
-
+﻿using Domain.Models;
+using Domain.Logic;
+using domain.Logic.Interfaces;
 
 namespace Domain.UseCases
 {
-    public class UserService
+    public class UserInteractor
     {
-        private IUserRepository _db;
+        private readonly IUserRepository _db;
 
-        public UserService(IUserRepository db)
+        public UserInteractor(IUserRepository db)
         {
             _db = db;
         }
@@ -16,10 +16,10 @@ namespace Domain.UseCases
         public Result<User> Register(User user)
         {
             var check = user.IsValid();
-            if (check.Failure)
+            if (check.isFailure)
                 return Result.Fail<User>(check.Error);
 
-            if (_db.GetUserByLogin(user.UserName))
+            if (_db.GetUserByLogin(user.UserName) != null)
                 return Result.Fail<User>("User with this username already exists");
 
 
@@ -31,7 +31,7 @@ namespace Domain.UseCases
             if (string.IsNullOrEmpty(login))
                 return Result.Fail<User>("Login error");
 
-            return _db.GetUserByLogin(login) ? Result.Ok(_db.GetUserByLogin(login)) : Result.Fail<User>("User not found");
+            return _db.GetUserByLogin(login) != null ? Result.Ok(_db.GetUserByLogin(login)) : Result.Fail<User>("User not found");
         }
 
         public Result IsUserExists(string login)
@@ -39,7 +39,7 @@ namespace Domain.UseCases
             if (string.IsNullOrEmpty(login))
                 return Result.Fail("Login error");
 
-            return _db.GetUserByLogin(login) ? Result.Ok() : Result.Fail("User not found");
+            return _db.GetUserByLogin(login) != null ? Result.Ok() : Result.Fail("User not found");
         }
     }
 }

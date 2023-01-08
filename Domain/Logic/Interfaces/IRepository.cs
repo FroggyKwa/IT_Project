@@ -1,6 +1,6 @@
-﻿using Domain.models;
+﻿using Domain.Models;
 
-namespace Domain.logic
+namespace Domain.Logic.Interfaces
 {
     public interface IRepository<T> where T : class
     {
@@ -10,11 +10,5 @@ namespace Domain.logic
         void Update(T item);
         void Delete(int id);
         void Save();
-    }
-
-    public interface IUserRepository : IRepository<User>
-    {
-        User GetUserByLogin(string login);
-        bool CreateUser(User user);
     }
 }

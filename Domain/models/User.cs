@@ -1,6 +1,6 @@
-﻿using Domain.logic;
+﻿using Domain.Logic;
 
-namespace Domain.models
+namespace Domain.Models
 {
     public class User
     {
@@ -11,6 +11,8 @@ namespace Domain.models
 
         public string UserName;
         public string Password;
+
+        public User() : this(0, "", "", "", "") { }
 
         public User(int id, string phoneNumber, string fullname, string userName, string password, Role role = Role.Patient)
         {
@@ -32,6 +34,8 @@ namespace Domain.models
                 return Result.Fail("Empty phone number");
             if (string.IsNullOrEmpty(Fullname))
                 return Result.Fail("Empty fullname");
+            if (Id < 0)
+                return Result.Fail("Incorrect user id");
 
             return Result.Ok();
         }
