@@ -41,7 +41,7 @@ namespace Domain.UseCases
             return doctor != null ? Result.Ok(doctor) : Result.Fail<Doctor>("Doctor not found");
         }
 
-        public Result<Doctor> deleteDoctor(int id)
+        public Result<Doctor> DeleteDoctor(int id)
         {
             var res = _apdb.GetAppointments(id);
             if (_apdb.GetAppointments(id).Any())

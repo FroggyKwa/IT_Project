@@ -51,7 +51,7 @@ namespace Tests
         {
             List<Appointment> Appointments = new();
 
-            var result = _service.deleteDoctor(0);
+            var result = _service.DeleteDoctor(0);
 
             Assert.True(result.isFailure);
             Assert.Equal("Doctor not found", result.Error);
@@ -63,7 +63,7 @@ namespace Tests
             __mock.Setup(repository => repository.CreateAppointment(It.IsAny<Appointment>())).Returns(() => true);
 
 
-            var result = _service.deleteDoctor(0);
+            var result = _service.DeleteDoctor(0);
 
             Assert.True(result.isFailure);
             Assert.Equal("Cannot delete doctor. Doctor has appointments", result.Error);
@@ -78,7 +78,7 @@ namespace Tests
             };
             _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => null);
 
-            var result = _service.deleteDoctor(0);
+            var result = _service.DeleteDoctor(0);
 
             Assert.True(result.isFailure);
             Assert.Equal("Doctor not found", result.Error);
@@ -91,7 +91,7 @@ namespace Tests
             _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => new Doctor(0, "a", new Specialization(0, "a")));
             _mock.Setup(repository => repository.deleteDoctor(It.IsAny<int>())).Returns(() => false);
 
-            var result = _service.deleteDoctor(0);
+            var result = _service.DeleteDoctor(0);
 
             Assert.True(result.isFailure);
             Assert.Equal("Cannot delete the doctor", result.Error);
@@ -104,7 +104,7 @@ namespace Tests
             _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => new Doctor(0, "a", new Specialization(0, "a")));
             _mock.Setup(repository => repository.deleteDoctor(It.IsAny<int>())).Returns(() => true);
 
-            var result = _service.deleteDoctor(0);
+            var result = _service.DeleteDoctor(0);
 
             Assert.True(result.Success);
         }
