@@ -15,7 +15,7 @@ namespace Domain.Models
             SpecializationId = specializationId;
         }
 
-        public Doctor() : this(0, "", 0) { }
+        public Doctor() : this(0, "default", 0) { }
 
         public Result IsValid()
         {

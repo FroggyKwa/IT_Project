@@ -1,9 +1,11 @@
 ﻿using Domain.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Models
 {
     public class User
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Fullname { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
