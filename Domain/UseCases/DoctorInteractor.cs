@@ -18,7 +18,7 @@ namespace Domain.UseCases
         {
             if (doctor.IsValid().isFailure)
                 return Result.Fail<Doctor>("Incorrect doctor: " + doctor.IsValid().Error);
-            return _db.createDoctor(doctor) ? Result.Ok(doctor) : Result.Fail<Doctor>("Cannot create doctor");
+            return _db.Create(doctor).IsValid().Success ? Result.Ok(doctor) : Result.Fail<Doctor>("Cannot create doctor");
         }
 
         public Result<Doctor> GetDoctor(int id)
@@ -26,19 +26,19 @@ namespace Domain.UseCases
             if (id < 0)
                 return Result.Fail<Doctor>("Incorrect doctor id");
 
-            var doctor = _db.getDoctor(id);
+            var doctor = _db.GetItem(id);
 
             return doctor != null ? Result.Ok(doctor) : Result.Fail<Doctor>("Doctor not found");
         }
-        public Result<Doctor> GetDoctor(Specialization specialization)
+        public Result<IEnumerable<Doctor>> GetDoctor(Specialization specialization)
         {
             var result = specialization.IsValid();
             if (result.isFailure)
-                return Result.Fail<Doctor>("Incorrect doctor specialization: " + result.Error);
+                return Result.Fail<IEnumerable<Doctor>>("Incorrect doctor specialization: " + result.Error);
 
-            var doctor = _db.getDoctor(specialization);
+            var doctors = _db.getDoctor(specialization);
 
-            return doctor != null ? Result.Ok(doctor) : Result.Fail<Doctor>("Doctor not found");
+            return doctors != null ? Result.Ok(doctors) : Result.Fail<IEnumerable<Doctor>>("Doctor not found");
         }
 
         public Result<Doctor> DeleteDoctor(int id)
@@ -49,7 +49,7 @@ namespace Domain.UseCases
             var result = GetDoctor(id);
             if (result.isFailure)
                 return Result.Fail<Doctor>(result.Error);
-            return _db.deleteDoctor(id) ? result : Result.Fail<Doctor>("Cannot delete the doctor");
+            return _db.Delete(id)!.IsValid().Success ? result : Result.Fail<Doctor>("Cannot delete the doctor");
         }
     }
 }

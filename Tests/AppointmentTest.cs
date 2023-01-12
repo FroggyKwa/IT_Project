@@ -71,7 +71,7 @@ namespace Tests
         {
             List<Appointment> apps = new();
             _mock.Setup(x => x.GetAppointments(It.IsAny<int>())).Returns(() => apps);
-            _mock.Setup(x => x.CreateAppointment(It.IsAny<Appointment>())).Returns(() => false);
+            _mock.Setup(x => x.Create(It.IsAny<Appointment>())).Returns(() => false);
 
             var app = new Appointment();
             var sched = new Schedule(0, DateTime.MinValue, DateTime.MaxValue);
@@ -86,7 +86,7 @@ namespace Tests
         {
             List<Appointment> apps = new();
             _mock.Setup(x => x.GetAppointments(It.IsAny<int>())).Returns(() => apps);
-            _mock.Setup(x => x.CreateAppointment(It.IsAny<Appointment>())).Returns(() => true);
+            _mock.Setup(x => x.Create(It.IsAny<Appointment>())).Returns(() => true);
 
             var app = new Appointment();
             var sched = new Schedule(0, DateTime.MinValue, DateTime.MaxValue);
