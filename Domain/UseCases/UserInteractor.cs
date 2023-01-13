@@ -21,9 +21,13 @@ namespace Domain.UseCases
 
             if (_db.GetUserByLogin(user.UserName) != null)
                 return Result.Fail<User>("User with this username already exists");
+            if (_db.Create(user))
+            {
+                _db.Save();
+                return Result.Ok(user);
+            }
 
-
-            return _db.Create(user) ? Result.Ok(user) : Result.Fail<User>("User creating error");
+            return Result.Fail<User>("User creating error");
         }
 
         public Result<User> GetUserByLogin(string login)

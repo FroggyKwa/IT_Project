@@ -26,7 +26,12 @@ namespace Domain.UseCases
             var result = doctor.IsValid() & schedule.IsValid();
             if (!result)
                 return Result.Fail<Schedule>("Cannot create schedule");
-            return _db.Create(schedule).Id >= 0 ? Result.Ok(schedule) : Result.Fail<Schedule>("Unable to add schedule");
+            if (_db.Create(schedule).Id >= 0)
+            {
+                _db.Save();
+                return Result.Ok(schedule);
+            }
+            return Result.Fail<Schedule>("Unable to add schedule");
         }
 
     }

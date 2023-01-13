@@ -18,7 +18,12 @@ namespace Domain.UseCases
         {
             if (doctor.IsValid().isFailure)
                 return Result.Fail<Doctor>("Incorrect doctor: " + doctor.IsValid().Error);
-            return _db.Create(doctor).IsValid().Success ? Result.Ok(doctor) : Result.Fail<Doctor>("Cannot create doctor");
+            if (_db.Create(doctor)!.IsValid().Success)
+            {
+                _db.Save();
+                return Result.Ok(doctor);
+            }
+            return Result.Fail<Doctor>("Cannot create doctor");
         }
 
         public Result<Doctor> GetDoctor(int id)
@@ -49,7 +54,12 @@ namespace Domain.UseCases
             var result = GetDoctor(id);
             if (result.isFailure)
                 return Result.Fail<Doctor>(result.Error);
-            return _db.Delete(id)!.IsValid().Success ? result : Result.Fail<Doctor>("Cannot delete the doctor");
+            if (_db.Delete(id)!.IsValid().Success)
+            {
+                _db.Save();
+                return result;
+            }
+            return Result.Fail<Doctor>("Cannot delete the doctor");
         }
     }
 }
