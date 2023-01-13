@@ -13,12 +13,12 @@ namespace Domain.UseCases
             _db = db;
         }
 
-        public Result<IEnumerable<Schedule>> getSchedule(Doctor doctor)
+        public Result<Schedule> getSchedule(Doctor doctor)
         {
             var result = doctor.IsValid();
             if (result.isFailure)
-                return Result.Fail<IEnumerable<Schedule>>("Cannot delete schedule");
-            return Result.Ok(_db.getSchedule(doctor));
+                return Result.Fail<Schedule>("Cannot get schedule");
+            return Result.Ok(_db.GetItem(doctor.Id)!);
         }
         
         public Result<Schedule> CreateSchedule(Doctor doctor, Schedule schedule)
@@ -26,7 +26,12 @@ namespace Domain.UseCases
             var result = doctor.IsValid() & schedule.IsValid();
             if (!result)
                 return Result.Fail<Schedule>("Cannot create schedule");
-            return _db.CreateSchedule(doctor, schedule) ? Result.Ok(schedule) : Result.Fail<Schedule>("Unable to add schedule");
+            if (_db.Create(schedule).Id >= 0)
+            {
+                _db.Save();
+                return Result.Ok(schedule);
+            }
+            return Result.Fail<Schedule>("Unable to add schedule");
         }
 
     }

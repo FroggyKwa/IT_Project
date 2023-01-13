@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 using Domain.Logic;
-using domain.Logic.Interfaces;
+using Domain.Logic.Interfaces;
 
 namespace Domain.UseCases
 {
@@ -21,9 +21,13 @@ namespace Domain.UseCases
 
             if (_db.GetUserByLogin(user.UserName) != null)
                 return Result.Fail<User>("User with this username already exists");
+            if (_db.Create(user))
+            {
+                _db.Save();
+                return Result.Ok(user);
+            }
 
-
-            return _db.CreateUser(user) ? Result.Ok(user) : Result.Fail<User>("User creating error");
+            return Result.Fail<User>("User creating error");
         }
 
         public Result<User> GetUserByLogin(string login)
@@ -31,7 +35,7 @@ namespace Domain.UseCases
             if (string.IsNullOrEmpty(login))
                 return Result.Fail<User>("Login error");
 
-            return _db.GetUserByLogin(login) != null ? Result.Ok(_db.GetUserByLogin(login)) : Result.Fail<User>("User not found");
+            return _db.GetUserByLogin(login) != null ? Result.Ok(_db.GetUserByLogin(login)!) : Result.Fail<User>("User not found");
         }
 
         public Result IsUserExists(string login)

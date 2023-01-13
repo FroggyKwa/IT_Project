@@ -18,7 +18,8 @@ namespace Tests
         [Fact]
         public void Create_Invalid()
         {
-            var doctor = new Doctor();
+            var doctor = new Doctor(-1, "", -1);
+            _mock.Setup(repository => repository.Create(It.IsAny<Doctor>())).Returns(() => doctor);
             var result = _service.CreateDoctor(doctor);
 
             Assert.True(result.isFailure);
@@ -28,8 +29,8 @@ namespace Tests
         [Fact]
         public void Create_CreateError()
         {
-            _mock.Setup(repository => repository.createDoctor(It.IsAny<Doctor>())).Returns(() => false);
-            var doctor = new Doctor(0, "a", new Specialization(1, "a"));
+            _mock.Setup(repository => repository.Create(It.IsAny<Doctor>())).Returns(() => new Doctor(-1, "", -1));
+            var doctor = new Doctor(0, "a", 1);
             var result = _service.CreateDoctor(doctor);
 
             Assert.True(result.isFailure);
@@ -39,8 +40,8 @@ namespace Tests
         [Fact]
         public void Create_Valid()
         {
-            _mock.Setup(repository => repository.createDoctor(It.IsAny<Doctor>())).Returns(() => true);
-            var doctor = new Doctor(0, "a", new Specialization(1, "a"));
+            var doctor = new Doctor(0, "a", 1);
+            _mock.Setup(repository => repository.Create(It.IsAny<Doctor>())).Returns(() => doctor);
             var result = _service.CreateDoctor(doctor);
 
             Assert.True(result.Success);
@@ -60,9 +61,9 @@ namespace Tests
         [Fact]
         public void Delete_AppointmentsNotEmpty()
         {
-            __mock.Setup(repository => repository.CreateAppointment(It.IsAny<Appointment>())).Returns(() => true);
-
-
+            var doctor = new Doctor(0, "a", 1);
+            _mock.Setup(repository => repository.GetItem(It.IsAny<int>())).Returns(() => doctor);
+            __mock.Setup(repository => repository.GetAppointments(doctor.Id)).Returns(() => new List<Appointment>() { new Appointment() });
             var result = _service.DeleteDoctor(0);
 
             Assert.True(result.isFailure);
@@ -76,7 +77,7 @@ namespace Tests
             {
                 new Appointment()
             };
-            _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => null);
+            _mock.Setup(repository => repository.GetItem(It.IsAny<int>())).Returns(() => null);
 
             var result = _service.DeleteDoctor(0);
 
@@ -88,8 +89,8 @@ namespace Tests
         public void Delete_DeleteError()
         {
             List<Appointment> Appointments = new();
-            _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => new Doctor(0, "a", new Specialization(0, "a")));
-            _mock.Setup(repository => repository.deleteDoctor(It.IsAny<int>())).Returns(() => false);
+            _mock.Setup(repository => repository.GetItem(It.IsAny<int>())).Returns(() => new Doctor(0, "a", 0));
+            _mock.Setup(repository => repository.Delete(It.IsAny<int>())).Returns(() => new Doctor(-1, "a", 0));
 
             var result = _service.DeleteDoctor(0);
 
@@ -101,8 +102,8 @@ namespace Tests
         public void Delete_Valid()
         {
             List<Appointment> Appointments = new();
-            _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => new Doctor(0, "a", new Specialization(0, "a")));
-            _mock.Setup(repository => repository.deleteDoctor(It.IsAny<int>())).Returns(() => true);
+            _mock.Setup(repository => repository.GetItem(It.IsAny<int>())).Returns(() => new Doctor(0, "a", 0));
+            _mock.Setup(repository => repository.Delete(It.IsAny<int>())).Returns(() => new Doctor());
 
             var result = _service.DeleteDoctor(0);
 
@@ -121,7 +122,7 @@ namespace Tests
         [Fact]
         public void GetById_NotFound()
         {
-            _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => null);
+            _mock.Setup(repository => repository.GetItem(It.IsAny<int>())).Returns(() => null);
 
             var result = _service.GetDoctor(0);
 
@@ -132,7 +133,7 @@ namespace Tests
         [Fact]
         public void GetById_Valid()
         {
-            _mock.Setup(repository => repository.getDoctor(It.IsAny<int>())).Returns(() => new Doctor(0, "a", new Specialization(0, "a")));
+            _mock.Setup(repository => repository.GetItem(It.IsAny<int>())).Returns(() => new Doctor(0, "a", 0));
 
             var result = _service.GetDoctor(0);
 
@@ -162,7 +163,7 @@ namespace Tests
         [Fact]
         public void GetBySpec_Valid()
         {
-            _mock.Setup(repository => repository.getDoctor(It.IsAny<Specialization>())).Returns(() => new Doctor(0, "a", new Specialization(0, "a")));
+            _mock.Setup(repository => repository.getDoctor(It.IsAny<Specialization>())).Returns(() => new List<Doctor> { new Doctor(0, "a", 0) });
 
             var result = _service.GetDoctor(new Specialization(0, "a"));
 
@@ -172,7 +173,7 @@ namespace Tests
         [Fact]
         public void EmptyDoctor()
         {
-            var doctor = new Doctor();
+            var doctor = new Doctor(-1, "a", 0);
             var check = doctor.IsValid();
 
             Assert.True(check.isFailure);
@@ -182,7 +183,7 @@ namespace Tests
         [Fact]
         public void NegativeID()
         {
-            var doctor = new Doctor(-1, "fullname", new Specialization(0, "a"));
+            var doctor = new Doctor(-1, "fullname", 0);
             var check = doctor.IsValid();
 
             Assert.True(check.isFailure);
@@ -192,7 +193,7 @@ namespace Tests
         [Fact]
         public void EmptyFullname()
         {
-            var doctor = new Doctor(1, "", new Specialization(0, "a"));
+            var doctor = new Doctor(1, "", 0);
             var check = doctor.IsValid();
 
             Assert.True(check.isFailure);
@@ -202,17 +203,17 @@ namespace Tests
         [Fact]
         public void InvalidSpecialization()
         {
-            var doctor = new Doctor(0, "fullname", new Specialization());
+            var doctor = new Doctor(0, "fullname", -1);
             var check = doctor.IsValid();
 
             Assert.True(check.isFailure);
-            Assert.Equal("Incorrect specialization", check.Error);
+            Assert.Equal("Incorrect specialization id", check.Error);
         }
 
         [Fact]
         public void ValidDoctor()
         {
-            var doctor = new Doctor(0, "fullname", new Specialization(0, "name"));
+            var doctor = new Doctor(0, "fullname", 0);
             var check = doctor.IsValid();
             Console.WriteLine(check.Error);
 
