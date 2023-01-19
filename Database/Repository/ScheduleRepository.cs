@@ -51,9 +51,16 @@ namespace Database.Repository
             context.SaveChangesAsync();
         }
 
-        public Schedule Update(Schedule item)
+        public Schedule? Update(Schedule item)
         {
-            return context.Schedules.Update(item.ToModel()).Entity.ToDomain();
+            try
+            {
+                return context.Schedules.Update(item.ToModel()).Entity.ToDomain();
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

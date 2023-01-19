@@ -1,8 +1,4 @@
-﻿
-
-using domain.Logic.Interfaces;
-using Domain.Logic.Interfaces;
-using Domain.UseCases;
+﻿using Domain.Logic.Interfaces;
 
 namespace Tests
 {

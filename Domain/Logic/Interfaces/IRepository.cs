@@ -7,7 +7,7 @@ namespace Domain.Logic.Interfaces
         IEnumerable<T> GetAll();
         T? GetItem(int id);
         T Create(T item);
-        T Update(T item);
+        T? Update(T item);
         T? Delete(int id);
         void Save();
     }

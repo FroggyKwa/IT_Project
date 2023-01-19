@@ -1,7 +1,6 @@
-﻿using Domain.Logic.Interfaces;
-using Domain.Models;
+﻿using Domain.Models;
 
-namespace domain.Logic.Interfaces
+namespace Domain.Logic.Interfaces
 {
     public interface ISpecializationRepository : IRepository<Specialization>
     {
