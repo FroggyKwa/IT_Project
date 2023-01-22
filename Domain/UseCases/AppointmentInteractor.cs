@@ -7,7 +7,7 @@ namespace Domain.UseCases
     public class AppointmentInteractor
     {
         private readonly IAppointmentRepository _db;
-        private readonly Dictionary<int, Mutex> _mutexDictionary = new Dictionary<int, Mutex>();
+        private static readonly Dictionary<int, Mutex> _mutexDictionary = new Dictionary<int, Mutex>();
 
 
         public AppointmentInteractor(IAppointmentRepository db)
