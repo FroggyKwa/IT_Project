@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Domain.UseCases;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IT_Project.Controllers
@@ -17,6 +18,7 @@ namespace IT_Project.Controllers
             _doctors = doctors;
         }
 
+        [Authorize]
         [HttpPost("create")]
         public IActionResult AddSchedule(int doctor_id, DateTime start_time, DateTime end_time)
         {
@@ -28,6 +30,7 @@ namespace IT_Project.Controllers
             return Ok(res.Value);
         }
 
+        [Authorize]
         [HttpGet("update")]
         public IActionResult UpdateSchedule(int schedule_id, int? doctor_id, DateTime? start_time, DateTime? end_time)
         {
@@ -71,6 +74,8 @@ namespace IT_Project.Controllers
                 return Problem(statusCode: 404, detail: res.Error);
             return Ok(res.Value);
         }
+
+        [Authorize]
         [HttpDelete("delete")]
         public IActionResult DeleteSchedule(int id)
         {
